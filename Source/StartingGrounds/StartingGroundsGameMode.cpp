@@ -3,7 +3,7 @@
 #include "StartingGrounds.h"
 #include "StartingGroundsGameMode.h"
 #include "StartingGroundsHUD.h"
-#include "StartingGroundsCharacter.h"
+#include "FirstPersonCharacter.h"
 
 AStartingGroundsGameMode::AStartingGroundsGameMode()
 	: Super()

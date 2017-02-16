@@ -1,7 +1,7 @@
 // Copyright 1998-2016 Epic Games, Inc. All Rights Reserved.
 
 #include "StartingGrounds.h"
-#include "StartingGroundsCharacter.h"
+#include "Player/FirstPersonCharacter.h"
 #include "StartingGroundsProjectile.h"
 #include "Animation/AnimInstance.h"
 #include "GameFramework/InputSettings.h"
@@ -78,19 +78,19 @@ void AStartingGroundsCharacter::SetupPlayerInputComponent(class UInputComponent*
 		InputComponent->BindAction("Fire", IE_Pressed, this, &AStartingGroundsCharacter::OnFire);
 	}
 
-	InputComponent->BindAxis("MoveForward", this, &AStartingGroundsCharacter::MoveForward);
-	InputComponent->BindAxis("MoveRight", this, &AStartingGroundsCharacter::MoveRight);
+	InputComponent->BindAxis("MoveForward", this, &AFirstPersonCharacter::MoveForward);
+	InputComponent->BindAxis("MoveRight", this, &AFirstPersonCharacter::MoveRight);
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
 	InputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	InputComponent->BindAxis("TurnRate", this, &AStartingGroundsCharacter::TurnAtRate);
+	InputComponent->BindAxis("TurnRate", this, &AFirstPersonCharacter::TurnAtRate);
 	InputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	InputComponent->BindAxis("LookUpRate", this, &AStartingGroundsCharacter::LookUpAtRate);
+	InputComponent->BindAxis("LookUpRate", this, &AFirstPersonCharacter::LookUpAtRate);
 }
 
-void AStartingGroundsCharacter::OnFire()
+void AFirstPersonCharacter::OnFire()
 {
 	// try and fire a projectile
 	if (ProjectileClass != NULL)
@@ -126,7 +126,7 @@ void AStartingGroundsCharacter::OnFire()
 
 }
 
-void AStartingGroundsCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
+void AFirstPersonCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
 	if (TouchItem.bIsPressed == true)
 	{
@@ -138,7 +138,7 @@ void AStartingGroundsCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, 
 	TouchItem.bMoved = false;
 }
 
-void AStartingGroundsCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
+void AFirstPersonCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
 	if (TouchItem.bIsPressed == false)
 	{
@@ -151,7 +151,7 @@ void AStartingGroundsCharacter::EndTouch(const ETouchIndex::Type FingerIndex, co
 	TouchItem.bIsPressed = false;
 }
 
-void AStartingGroundsCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location)
+void AFirstPersonCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
 	if ((TouchItem.bIsPressed == true) && (TouchItem.FingerIndex == FingerIndex))
 	{
@@ -186,7 +186,7 @@ void AStartingGroundsCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex,
 	}
 }
 
-void AStartingGroundsCharacter::MoveForward(float Value)
+void AFirstPersonCharacter::MoveForward(float Value)
 {
 	if (Value != 0.0f)
 	{
@@ -195,7 +195,7 @@ void AStartingGroundsCharacter::MoveForward(float Value)
 	}
 }
 
-void AStartingGroundsCharacter::MoveRight(float Value)
+void AFirstPersonCharacter::MoveRight(float Value)
 {
 	if (Value != 0.0f)
 	{
@@ -204,27 +204,27 @@ void AStartingGroundsCharacter::MoveRight(float Value)
 	}
 }
 
-void AStartingGroundsCharacter::TurnAtRate(float Rate)
+void AFirstPersonCharacter::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
-void AStartingGroundsCharacter::LookUpAtRate(float Rate)
+void AFirstPersonCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
-bool AStartingGroundsCharacter::EnableTouchscreenMovement(class UInputComponent* InputComponent)
+bool AFirstPersonCharacter::EnableTouchscreenMovement(class UInputComponent* InputComponent)
 {
 	bool bResult = false;
 	if (FPlatformMisc::GetUseVirtualJoysticks() || GetDefault<UInputSettings>()->bUseMouseForTouch)
 	{
 		bResult = true;
-		InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AStartingGroundsCharacter::BeginTouch);
-		InputComponent->BindTouch(EInputEvent::IE_Released, this, &AStartingGroundsCharacter::EndTouch);
-		InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AStartingGroundsCharacter::TouchUpdate);
+		InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AFirstPersonCharacter::BeginTouch);
+		InputComponent->BindTouch(EInputEvent::IE_Released, this, &AFirstPersonCharacter::EndTouch);
+		InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AFirstPersonCharacter::TouchUpdate);
 	}
 	return bResult;
 }
